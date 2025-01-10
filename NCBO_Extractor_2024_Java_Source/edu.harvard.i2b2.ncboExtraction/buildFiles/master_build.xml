@@ -1,0 +1,38 @@
+<project basedir="." default="build-all" name="NCBO Extraction tools">
+
+
+	<!-- ========== Executable Targets ======================================== -->
+	<property name="gensrc"     value="gensrc"/>
+	<property name="genlib"     value="genlib"/>
+	<property name="dist"     value="dist"/>
+
+	<target name="build-all">
+        <!-- build i2b2common -->
+        <subant target="dist">
+        	<fileset dir="../../edu.harvard.i2b2.common" includes="build.xml" />
+        </subant>
+    	<!-- copy dist/common-core to client's genlib -->
+
+		<copy todir="../../edu.harvard.i2b2.ncboExtraction/${genlib}">
+		       	      <fileset dir="../../edu.harvard.i2b2.common/${dist}">
+				         <include name="*.jar"/>
+		              </fileset>
+		</copy>
+
+   	
+    	<!-- ant call client's build.xml for dist  -->
+		<subant target="dist">	
+			<fileset dir="../../edu.harvard.i2b2.ncboExtraction/buildFiles" includes="build.xml" /> 
+    	</subant>
+   		
+    </target>
+	
+	<!--
+	<target name="clean-all">
+		<subant target="clean">
+			<fileset dir="../../edu.harvard.i2b2.common" includes="build.xml" />
+		    <fileset dir="../../edu.harvard.i2b2.ncboExtraction/buildFiles" includes="build.xml" />  
+		</subant>	
+	</target> 
+	-->
+</project>

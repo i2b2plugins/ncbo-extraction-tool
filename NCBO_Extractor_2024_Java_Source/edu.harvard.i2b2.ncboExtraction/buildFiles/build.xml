@@ -1,0 +1,140 @@
+<project basedir="../" default="all" name="NCBO Extraction Tools 2.1">
+
+	
+	<property name="Project" value="edu.harvard.i2b2.ncboExtraction_2.1" />
+
+	<!-- ========== Executable Targets ======================================== -->
+	<property name="Name" value="NCBOExtraction_2.1" />
+	<import file="../../edu.harvard.i2b2.common/common_build.xml" />
+	<property name="gensrc"     value="gensrc"/>
+
+	
+	<!-- =================================================================== -->
+	<!-- 								INIT 								 -->
+	<!-- =================================================================== -->
+	 <target name="gensrcInit">
+			<path id="classpath">
+				<!-- tdw9: new -->
+				<fileset dir="../${i2b2CommonProject}/${lib}">
+					<include name="**/*.jar" />
+				</fileset>
+					<fileset dir="${genlib}">
+    					<include name="*.jar" />
+					</fileset>
+				<pathelement location="${classes}" />				
+				
+				<!-- tdw9: original: <path refid="common-classpath" /> -->
+			</path>
+	<!-- JRE 1.5 style jaxb gen tool
+			<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+				<classpath refid="classpath" />
+			</taskdef>
+	-->
+		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+			<classpath refid="classpath" />
+		</taskdef>
+	 	
+	</target>
+
+
+
+
+	<!-- =================================================================== -->
+	<!-- 						LIMITED CLEAN 								 -->
+	<!-- =================================================================== -->
+	<target name="limitedClean"  description="Cleaning edu.harvard.i2b2.ncboExtraction/classes" >
+    	<!-- <delete dir="${dist}"/> -->
+    	<!-- <delete dir="${gensrc}"/>   -->
+    	<!-- <delete dir="${genlib}"/> -->
+		<delete dir="${classes}"/>
+    	<!-- <mkdir dir="${genlib}"/> -->
+    	<!-- <mkdir dir="${dist}"/> -->
+    	<!-- <mkdir dir="${gensrc}"/>-->
+		<!-- <mkdir dir="${classes}"/> -->
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- 								COMPILE 							 -->
+	<!-- =================================================================== -->
+	<!-- tdw9: remove dependency to jaxb_gen <target name="compile" depends="jaxb_gen" description="Compile files without cleaning"> -->
+	<!-- add dependecy to gensrcInit because that sets up classpath -->
+	<!-- set includeantruntime to false-->
+	<!-- set src and target level to 1.8 -->
+		
+		<target name="compile" depends="limitedClean, gensrcInit" description="Cleaning minimally and then Compile">
+			<mkdir dir="${classes}" />
+			 <!-- <javac destdir="${classes}" optimize="${javac.opt}" includeantruntime="false" debug="${javac.debug}" source="1.8" target="1.8" bootclasspath="C:\Program Files\Java\jdk-1.8\lib\rt.jar" executable="C:\Program Files\Java\jdk-1.8\bin\javac" compiler="javac1.8"> -->
+			 <javac destdir="${classes}" optimize="${javac.opt}" includeantruntime="false" debug="${javac.debug}" source="1.8" target="1.8" compiler="javac1.8">
+			 <!-- <javac destdir="${classes}" optimize="${javac.opt}" includeantruntime="false" debug="${javac.debug}" source="11" target="11" compiler="javac10+"> -->	
+				<src path="${src}" />
+				<src path="${gensrc}" />
+			
+				<classpath refid="classpath" />
+			</javac>
+		</target>
+	<!--
+	<target name="compile" depends="jaxb_gen" description="Compile files without cleaning">
+		<mkdir dir="${classes}" />
+		<javac destdir="${classes}" optimize="${javac.opt}" debug="${javac.debug}">
+			<src path="${src}" />
+			<src path="${gensrc}" />
+		
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	-->
+	
+	<!-- =================================================================== -->
+	<!-- 								COMMON JAXB GENERATION 				 -->
+	<!-- =================================================================== -->
+<!--- old
+	<target name="jaxb_gen" depends="gensrcInit">
+			 <java dir="." jar="../edu.harvard.i2b2.common/lib/jaxb/jaxb-xjc.jar" fork="true" failonerror="true" >
+			     <arg line="-quiet -nv -extension ../${i2b2xmlproject}/xsd/cell/bioportal/allTerms.xsd  ../${i2b2xmlproject}/xsd/cell/ont_1.1/ONT_RESP.xsd
+					-b etc/xsd_1.1/i2b2_ncbo_all_bindings.xjb etc/xsd_1.1/i2b2_rspdo_bindings.xjb -d ${gensrc}"/>
+			     <jvmarg value="-Djava.endorsed.dirs=../edu.harvard.i2b2.common/lib/jaxb" />
+			     <classpath refid="classpath"/>
+			</java>
+	</target>
+-->	
+
+	<!-- No Longer Used by Default Build-All -->
+	<target name="jaxb_gen" depends="gensrcInit" description="Generate JAXB classes for i2b2 and Map Data messages">
+			<xjc destdir="${gensrc}" removeOldOutput="no">
+				<schema dir="../${i2b2xmlproject}/xsd/cell/bioportal_1.1/" includes="allTerms.xsd" />
+				<schema dir="../${i2b2xmlproject}/xsd/cell/ont_1.1" includes="ONT_RESP.xsd" />
+
+				<binding dir="." includes="etc/xsd_1.1/i2b2_ncbo_all_bindings.xjb" />
+				<binding dir="." includes="etc/xsd_1.1/i2b2_rspdo_bindings.xjb" />
+			</xjc>
+	</target>
+	
+	<!-- =================================================================== -->
+	<!-- 								DIST 								 -->
+	<!-- =================================================================== -->
+	<target name="dist" depends="compile" description="package application for distribution/deployment">
+
+		<echo message="${Name}: Creating the archive package!" />
+		<jar destfile="${dist}/${Name}.jar">
+			<fileset dir="${classes}">
+				<!--
+				<exclude name="**/datavo/**" />
+				-->
+			</fileset>
+		</jar>
+		
+		<!-- copy genlib/, which includes the new i2b2Common-core.jar into dist/ -->
+		<copy todir="${dist}">
+		    <fileset dir=".">
+		        <include name="${genlib}/**"/>
+		    </fileset>
+		</copy>
+	</target>
+	
+	
+	<!-- =================================================================== -->
+	<!-- 								ALL 								 -->
+	<!-- =================================================================== -->
+	<target name="all" depends="jaxb_gen">
+	</target>
+</project>

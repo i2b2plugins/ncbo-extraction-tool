@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for i2b2 with spring jdbc template.
+  -->
+<beans>
+
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+    <property name="url" value="jdbc:sqlserver://HOST:PORT;encrypt=false"/>
+    <property name="username" value="USERNAME"/>
+    <property name="password" value="PASSWORD"/>
+    <property name="defaultAutoCommit" value="false"/>
+    <property name="defaultReadOnly" value="false"/>
+  </bean>
+  
+  <bean id="database" class="edu.harvard.i2b2.ncbo.model.DBInfoType">
+    <property name="db_fullSchema" value="dbo"/>
+    <property name="stagingTable" value="ONTOLOGY_STAGING_TABLE"/>
+  </bean>
+  
+	<bean id="conceptDAO" class="edu.harvard.i2b2.ncbo.dao.ConceptPersistDao">
+       <property name="dataSource" ref="dataSource"/>
+    </bean>
+  
+</beans>
+

@@ -1,0 +1,20 @@
+<jxb:bindings version="1.0"
+               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<!-- tdw9: original --> 
+<!-- <jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/bioportal/allTerms.xsd" node="/xs:schema"> -->
+
+<!-- tdw9: 1.1-->
+<jxb:bindings schemaLocation="../../../edu.harvard.i2b2.xml/xsd/cell/bioportal_1.1/allTerms.xsd" node="/xs:schema">
+        <jxb:schemaBindings > 
+	           <jxb:package name="edu.harvard.i2b2.ncboclient.datavo.ncbo.all">
+	  	         <jxb:javadoc><![CDATA[<body>Package level 
+	  	 documentation for generated package primer.myPo.</body>]]>
+	  	         </jxb:javadoc>
+	  	     </jxb:package>
+	  	   
+      </jxb:schemaBindings>
+    </jxb:bindings> 
+  
+<!-- schemaLocation="po.xsd" node="/xs:schema" -->
+</jxb:bindings> 
