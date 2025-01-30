@@ -24,7 +24,7 @@ Some caveats for this tool:
 See <a href="documentation/release/">User Documentation</a> for more details.
 
 ## License
-This software is released under the same license as i2b2: Mozilla Public License ("Software License") Version 2
+This software is released under the same license as i2b2: <a href="https://www.i2b2.org/software/i2b2_license.html">Mozilla Public License ("Software License") Version 2</a>
 
 ## Project status
 This project is ongoing and is periodically updated.
